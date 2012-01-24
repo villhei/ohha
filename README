@@ -1,6 +1,6 @@
 Aihe: Matopeli
 
-  Yksinkertainen matopeli. Matopelissä on ainakin yksi pelaaja,
+  	Yksinkertainen matopeli. Matopelissä on ainakin yksi pelaaja,
 	mahdollisesti ajan salliessa toteutetaan moninpeli. Matopelissä
 	on vaihtuvia kenttiä, joissa mato seikkailee syöden omenoita,
 	tai muita vastaavia objekteja, ja kasvaa pituutta. 
