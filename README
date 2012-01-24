@@ -1,0 +1,19 @@
+Aihe: Matopeli
+
+  Yksinkertainen matopeli. Matopelissä on ainakin yksi pelaaja,
+	mahdollisesti ajan salliessa toteutetaan moninpeli. Matopelissä
+	on vaihtuvia kenttiä, joissa mato seikkailee syöden omenoita,
+	tai muita vastaavia objekteja, ja kasvaa pituutta. 
+
+	Madon on vältettävä törmäämästä pelialueen seiniin, tai omaan
+	vartaloonsa. 
+
+Käyttäjät:
+
+	Peli-intoinen pelaaja
+
+Toiminnot:
+
+	Pelikentän valinta
+	Highscore-lista
+	Mahdollinen verkkopeli
