@@ -112,32 +112,32 @@ public class Snake {
 	{
 		int pos_x = parts.getFirst().getHead_x();
 		int pos_y = parts.getFirst().getHead_y();
-		parts.add(new SnakePart(pos_x, pos_y, width, height));
+		parts.addLast(new SnakePart(pos_x+movestep, pos_y, width, height));
 		parts.removeFirst();
 		
 	}
 	private void moveLeft()
 	{
-		if(head_x < 0)
-			head_x = 800;
-		else
-			head_x = head_x - movestep;
+		int pos_x = parts.getFirst().getHead_x();
+		int pos_y = parts.getFirst().getHead_y();
+		parts.add(new SnakePart(pos_x-movestep, pos_y, width, height));
+		parts.removeFirst();
 	}
 	
 	private void moveUp()
 	{
-		if(head_y < 0)
-			head_y = 600;
-		else
-			head_y = head_y - movestep;
+		int pos_x = parts.getFirst().getHead_x();
+		int pos_y = parts.getFirst().getHead_y();
+		parts.add(new SnakePart(pos_x, pos_y+movestep, width, height));
+		parts.removeFirst();
 	}
 	
 	private void moveDown()
 	{
-		if(head_y > 600)
-			head_y = 0;
-		else
-			head_y = head_y + movestep;
+		int pos_x = parts.getFirst().getHead_x();
+		int pos_y = parts.getFirst().getHead_y();
+		parts.add(new SnakePart(pos_x, pos_y-movestep, width, height));
+		parts.removeFirst();
 	}
 	
 	public void move()

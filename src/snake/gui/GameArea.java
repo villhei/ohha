@@ -66,11 +66,7 @@ public class GameArea extends JPanel {
 
 	private void drawSnake(Graphics g) {
 		
-		System.out.println("game.getSnake()" + game.getSnake());
-		System.out.println(game.getSnake().getParts());
-		
 		LinkedList<SnakePart> parts = game.getSnake().getParts();
-		System.out.println("parts:" + parts);
 		for (SnakePart part : parts)
 		{
 			g.setColor(Color.blue);
