@@ -128,7 +128,7 @@ public class Snake {
 	{
 		int pos_x = parts.getFirst().getHead_x();
 		int pos_y = parts.getFirst().getHead_y();
-		parts.add(new SnakePart(pos_x, pos_y+movestep, width, height));
+		parts.add(new SnakePart(pos_x, pos_y-movestep, width, height));
 		parts.removeFirst();
 	}
 	
@@ -136,7 +136,7 @@ public class Snake {
 	{
 		int pos_x = parts.getFirst().getHead_x();
 		int pos_y = parts.getFirst().getHead_y();
-		parts.add(new SnakePart(pos_x, pos_y-movestep, width, height));
+		parts.add(new SnakePart(pos_x, pos_y+movestep, width, height));
 		parts.removeFirst();
 	}
 	
