@@ -55,7 +55,6 @@ public class GameArea extends JPanel {
 		drawSnake(g);
 
 	}
-
 	private void drawObstacle(Obstacle obs, Graphics g) {
 		g.setColor(Color.red);
 		g.fillRect(obs.getStart_x(),

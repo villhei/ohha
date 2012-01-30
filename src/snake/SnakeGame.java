@@ -25,7 +25,6 @@ public class SnakeGame extends Thread{
 	public SnakeGame()
 	{
 		obstacles = new ArrayList<Obstacle>();
-		//snake = new ArrayList<Game>();
 		Obstacle ylareuna = new Obstacle(0, 0, 800, 20);
 		Obstacle alareuna = new Obstacle(0, 580, 800, 20);
 		Obstacle vasreuna = new Obstacle(0, 20, 20, 560);
