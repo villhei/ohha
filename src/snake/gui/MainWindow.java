@@ -10,9 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import snake.SnakeGame;
 
-/**
+/** SnakeGame main Window class. Handles all the window related
+ * stuff and takes the current snakegame as a constructor parameter
  *
- * @author villheik
+ * @author Ville Heikkinen
  */
 public class MainWindow {
 
@@ -23,6 +24,11 @@ public class MainWindow {
 	final int size_y = 600;
 	private SnakeGame game;
 
+	/** Constructor for Snake main window.
+	 *  calls createGameArea() quite quickly
+	 * 
+	 * @param sgame Game state as a paremeter
+	 */
 	public MainWindow(SnakeGame sgame) {
 		game = sgame;
 		frame = new JFrame("Mighty Snake");
@@ -39,6 +45,9 @@ public class MainWindow {
 		createGameArea();
 	}
 
+	/** Creates game area, gets ready for the game
+	*
+	*/
 	private void createGameArea() {
 
 		ga = new GameArea(size_x, size_y, game);
@@ -49,8 +58,11 @@ public class MainWindow {
 		ga.addKeyListener(new SnakeListener(game));
 		frame.add(ga);
 	}
+	/**
+	 *  Method for repainting the game area
+	 */
 	
-	public  void rePaint()
+	public void rePaint()
 	{
 		ga.repaint();
 	}

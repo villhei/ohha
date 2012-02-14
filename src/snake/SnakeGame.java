@@ -29,6 +29,7 @@ public class SnakeGame extends Thread {
 		obstacles = new ArrayList<Obstacle>();
 		Obstacle ylareuna = new Obstacle(0, 0, 800, 20);
 		Obstacle alareuna = new Obstacle(0, 580, 800, 20);
+		Obstacle keski = new Obstacle(300, 300, 100, 100);
 		Obstacle vasreuna = new Obstacle(0, 20, 20, 560);
 		Obstacle oikreuna = new Obstacle(780, 20, 20, 560);
 
@@ -41,6 +42,7 @@ public class SnakeGame extends Thread {
 		obstacles.add(ylareuna);
 		obstacles.add(alareuna);
 		obstacles.add(vasreuna);
+		obstacles.add(keski);
 
 	}
 
@@ -61,32 +63,33 @@ public class SnakeGame extends Thread {
 		MainWindow window = new MainWindow(this);
 		System.out.println("Testi");
 		startGame();
-
 		while (isRunning()) {
+			window.rePaint();
 			// logiikka
 			if (!paused && !this.ended) {
 				this.snake.move();
-
 				if (this.checkCollision()) {
 					this.ended = true;
 				}
-
-				if (apple.isVisible()) {
-					if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
-						score += 100;
-						apple.randomizePosition();
-						snake.growSnake();
-					}
-				}
+				this.checkApple();
 			}
 			try {
 				SnakeGame.sleep(100);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
 			}
-			// piirtely
-			window.rePaint();
+		}
+	}
 
+	public void checkApple() {
+		if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
+			score += 100;
+			apple.randomizePosition();
+			while(!appleFits(apple.getPos_x(), apple.getPos_y()))
+			{
+				apple.randomizePosition();
+			}
+			snake.growSnake();
 		}
 	}
 
@@ -114,6 +117,21 @@ public class SnakeGame extends Thread {
 		return false;
 	}
 
+	public boolean appleFits(int x, int y) {
+		for (Obstacle obs : obstacles) {
+			if (obs.overlap(x, y)) {
+				return false;
+			}
+		}
+		LinkedList<SnakePart> parts = snake.getParts();
+		for (SnakePart part : parts) {
+			if (part.overlap(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public boolean isRunning() {
 		return running;
 	}
@@ -135,6 +153,6 @@ public class SnakeGame extends Thread {
 	}
 
 	public String getScore() {
-		return "" +score;
+		return "" + score;
 	}
 }
