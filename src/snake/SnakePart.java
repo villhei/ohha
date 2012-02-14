@@ -18,7 +18,22 @@ public class SnakePart {
 		width = wth;
 		height = hth;
 	}
-	/**
+	/** Method for checking snake collision with itself
+	 * 
+	 * @param x x_position to check overlap for
+	 * @param y y_position to check overlap for
+	 * @return true if snake head collides with parts
+	 */
+	
+	public boolean overlap(int x, int y)
+	{
+		if ((x >= head_x && x < head_x + width)
+				&& (y >= head_y && y < head_y + height)) {
+			return true;
+		}
+		return false;
+	}
+	/** toString representation of the snake part in question
 	 *  @return debug information for snake parts
 	 */
 	@Override

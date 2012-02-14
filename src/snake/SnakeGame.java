@@ -14,86 +14,127 @@ import snake.gui.MainWindow;
  *
  * @author villheik
  */
-public class SnakeGame extends Thread{
-	
+public class SnakeGame extends Thread {
+
 	private ArrayList<Obstacle> obstacles;
 	//private ArrayList<Game> snake;
 	boolean running = false;
 	private Snake snake;
 	boolean ended = false;
-	
-	public SnakeGame()
-	{
+	private Apple apple;
+	private int score;
+	private boolean paused;
+
+	public SnakeGame() {
 		obstacles = new ArrayList<Obstacle>();
 		Obstacle ylareuna = new Obstacle(0, 0, 800, 20);
 		Obstacle alareuna = new Obstacle(0, 580, 800, 20);
 		Obstacle vasreuna = new Obstacle(0, 20, 20, 560);
 		Obstacle oikreuna = new Obstacle(780, 20, 20, 560);
-		
+
 		snake = new Snake(200, 200);
-		
+		apple = new Apple(400, 400);
+		score = 0;
+		paused = false;
+
 		obstacles.add(oikreuna);
 		obstacles.add(ylareuna);
 		obstacles.add(alareuna);
 		obstacles.add(vasreuna);
-		
+
 	}
-	
-	public ArrayList<Obstacle> getObstacles()
-	{
+
+	public ArrayList<Obstacle> getObstacles() {
 		return obstacles;
 	}
-	
-	public Snake getSnake()
-	{
+
+	public Apple getApple() {
+		return apple;
+	}
+
+	public Snake getSnake() {
 		return snake;
 	}
-	
+
 	@Override
-	public void run()
-	{
+	public void run() {
 		MainWindow window = new MainWindow(this);
 		System.out.println("Testi");
 		startGame();
-		
-		while(isRunning()) {
+
+		while (isRunning()) {
 			// logiikka
-			this.snake.move();
+			if (!paused && !this.ended) {
+				this.snake.move();
+
+				if (this.checkCollision()) {
+					this.ended = true;
+				}
+
+				if (apple.isVisible()) {
+					if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
+						score += 100;
+						apple.randomizePosition();
+						snake.growSnake();
+					}
+				}
+			}
 			try {
-			SnakeGame.sleep(100);
+				SnakeGame.sleep(100);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
 			}
 			// piirtely
 			window.rePaint();
-			
+
 		}
 	}
-	
-	public boolean isRunning()
-	{
+
+	public void togglePause() {
+		if (paused) {
+			paused = false;
+		} else {
+			paused = true;
+		}
+	}
+
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public boolean checkCollision() {
+		for (Obstacle obs : obstacles) {
+			if (obs.overlap(snake.getPos_x(), snake.getPos_y())) {
+				return true;
+			}
+		}
+		if (snake.checkforCollision()) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isRunning() {
 		return running;
 	}
-	
-	public boolean hasEnded()
-	{
+
+	public boolean hasEnded() {
 		return ended;
 	}
-	
-	public void endGame()
-	{
+
+	public void endGame() {
 		ended = true;
 	}
-	
-	public void pauseGame()
-	{
+
+	public void pauseGame() {
 		running = false;
 	}
-	
-	public void startGame()
-	{
+
+	public void startGame() {
 		running = true;
 	}
-	
-	
+
+	public String getScore() {
+		return "" +score;
+	}
 }

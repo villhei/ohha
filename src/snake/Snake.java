@@ -19,15 +19,16 @@ public class Snake {
 	private int width;
 	private int height;
 	final int movestep = 20;
+	private boolean alive;
 	private LinkedList<SnakePart> parts;
+
 	// Directions:
 	//    0 
 	//  3 * 1
 	//    2
-	/**	@param input snake start point
+	/**
+	 * @param input snake start point
 	 */
-
-
 	public Snake(int x, int y) {
 		width = 20;
 		height = 20;
@@ -35,6 +36,7 @@ public class Snake {
 		pos_x = x;
 		pos_y = y;
 		direction = 1;
+		alive = true;
 		parts = new LinkedList<SnakePart>();
 
 		for (int i = 0; i < length; ++i) {
@@ -42,113 +44,211 @@ public class Snake {
 			System.out.println("added!");
 			System.out.println("" + parts.getFirst());
 		}
+		System.out.println("parts.size: " + parts.size());
+		System.out.println("snake.legnth: " + length);
+		
 
 	}
+	
+	public boolean checkforCollision()
+	{
+		boolean first = true;
+		for(SnakePart part : parts)
+		{
+			if(first)
+			{
+				first = false;
+			}
+			else
+			{
+				if(part.overlap(pos_x, pos_y))
+				{
+					System.out.println("törmäs");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
-	 *  @return snake parts for drawing
+	 * Method for returning snake's nodes
+	 *
+	 * @return snake parts for drawing
 	 */
 	public LinkedList getParts() {
 		return parts;
 	}
 
 	/**
-	 *  @return snake description, useful debug
+	 * Method for String expression of the snake
+	 *
+	 * @return snake description, useful debug
 	 */
 	@Override
 	public String toString() {
 		return "Direction: " + direction + "\npos_x: " + pos_x + "\npos_y: " + pos_y;
 	}
+	
+	public boolean alive()
+	{
+		return alive;
+	}
+	
+	public void die()
+	{
+		alive = false;
+	}
 
 	/**
-	 *  @return snake height
+	 * Getter for snake's height
+	 *
+	 * @return snake height
 	 */
 	public int getHeight() {
 		return height;
 	}
 
 	/**
-	 *  @param set snake height
+	 * Setter for snake's height
+	 *
+	 * @param set snake height
 	 */
 	public void setHeight(int height) {
 		this.height = height;
 	}
+
 	/**
-	 *  @return snake width
+	 * Getter for snake's width
+	 *
+	 * @return snake width
 	 */
 	public int getWidth() {
 		return width;
 	}
+
 	/**
-	 *  @return set snake width
+	 * Setter for snake's width
+	 *
+	 * @return set snake width
 	 */
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
 	/**
-	 *  @param grow snake
+	 * Grows snake when snake eats an apple
+	 *
+	 * @param grow snake
 	 */
 	public void growSnake() {
 		length++;
 	}
+
 	/**
-	 *  @return gets snake length
+	 * What's the length of the snake again?
+	 *
+	 * @return gets snake length
 	 */
 	public int getLength() {
 		return this.length;
 	}
+
 	/**
-	 *  @return gets snake direction
+	 * Snakes current direction
+	 *
+	 * @return gets snake direction
 	 */
 	public int getDirection() {
 		return direction;
 	}
+
 	/**
-	 *  @param set snake direction int
+	 * Set snakes direction to newDirection
+	 *
+	 * @param set snake direction int
 	 */
 	public void setDirection(int newDirection) {
 		direction = newDirection;
 	}
 
+	/**
+	 * Moves snake right with the desired movestep if snake goes out of
+	 * boundaries, return to the game area to x position 0 (left)
+	 */
 	private void moveRight() {
 		pos_x = parts.getFirst().getHead_x() + movestep;
-		if(pos_x > 800) {
+		if (pos_x >= 800) {
 			pos_x = 0;
 		}
 		pos_y = parts.getFirst().getHead_y();
 		parts.addFirst(new SnakePart(pos_x, pos_y, width, height));
-		parts.removeLast();
-
+		if (parts.size() == length+1) {
+			parts.removeLast();
+		}
 	}
 
+	/**
+	 * Moves snake left with the desired movestep if snake goes out of
+	 * boundaries, return to the game area to x position 780 (right)
+	 */
 	private void moveLeft() {
 		pos_x = parts.getFirst().getHead_x() - movestep;
 		pos_y = parts.getFirst().getHead_y();
-		if(pos_x < 0)
-			pos_x = 800;
+		if (pos_x < 0) {
+			pos_x = 780;
+		}
 		parts.addFirst(new SnakePart(pos_x, pos_y, width, height));
-		parts.removeLast();
+		if (parts.size() == length+1) {
+			parts.removeLast();
+		}
 	}
 
+	/**
+	 * Moves snake up with the desired movestep if snake goes out of boundaries,
+	 * return to the game area to y position 580 (down)
+	 */
 	private void moveUp() {
 		pos_x = parts.getFirst().getHead_x();
 		pos_y = parts.getFirst().getHead_y() - movestep;
-		if(pos_y < 0)
-			pos_y = 600;
+		if (pos_y < 0) {
+			pos_y = 580;
+		}
 		parts.addFirst(new SnakePart(pos_x, pos_y, width, height));
-		parts.removeLast();
+		if (parts.size() == length+1) {
+			parts.removeLast();
+		}
 	}
-
+	
+	/**
+	 * Moves snake up with the desired movestep if snake goes out of boundaries,
+	 * return to the game area to y position 0 (up)
+	 */
 	private void moveDown() {
 		pos_x = parts.getFirst().getHead_x();
 		pos_y = parts.getFirst().getHead_y() + movestep;
-		if(pos_y > 600)
+		if (pos_y >= 600) {
 			pos_y = 0;
+		}
 		parts.addFirst(new SnakePart(pos_x, pos_y, width, height));
-		parts.removeLast();
+		if (parts.size() == length+1) {
+			parts.removeLast();
+		}
 	}
+	
+	public int getPos_x() {
+		return pos_x;
+	}
+
+	public int getPos_y() {
+		return pos_y;
+	}
+
 	/**
-	 *  @param move snake body to set direction
+	 * Method for moving snake, asks for snake direction and chooses the
+	 * separate method accordingly
+	 *
+	 * @param move snake body to set direction
 	 */
 	public void move() {
 		if (direction == 0) {

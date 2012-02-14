@@ -49,6 +49,9 @@ public class SnakeListener implements KeyListener {
 			game.getSnake().setDirection(1);
 			System.out.println(game.getSnake());
 		}
+		if (ke.getKeyCode() == KeyEvent.VK_SPACE) {
+			game.togglePause();
+		}
 	}
 
 	@Override
