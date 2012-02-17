@@ -37,12 +37,14 @@ public class GameArea extends JPanel {
 		return "Gamearea x: " + blaa.width + ", y: " + blaa.height;
 	}
 
+	/** Method to paint the window
+	 *  Used for repainting the game state
+	 * @param Graphics as a parameter
+	 */
 	@Override
 	public void paint(Graphics gfx) {
-
 		super.paint(gfx);
 		drawGameEvents(gfx);
-
 	}
 
 	private void drawGameEvents(Graphics g) {
@@ -53,12 +55,27 @@ public class GameArea extends JPanel {
 		drawSnake(g);
 		drawApple(g);
 		if (game.isPaused()) {
-			drawDialog(g, "PAUSED - SCORE: " + game.getScore());
+			drawDialog(g, "PAUSED");
 		}
 		if (game.hasEnded()) {
-			drawDialog(g, "DEATH! - SCORE: " + game.getScore());
+			drawPlayerStats(g);
+
 		}
 
+	}
+	
+	private void drawPlayerStats(Graphics g)
+	{
+		String deathMessage = "DEATH! - P1: " + game.getSnake().get(0).getScore();
+		if(game.getPlayers() > 1)
+		{
+			deathMessage += ", P2: " + game.getSnake().get(1).getScore();
+		}
+		if(game.getPlayers() > 2)
+		{
+			deathMessage += ", P3: " + game.getSnake().get(2).getScore();
+		}
+		drawDialog(g, deathMessage);
 	}
 
 	private void drawObstacle(Obstacle obs, Graphics g) {
@@ -79,6 +96,10 @@ public class GameArea extends JPanel {
 			if (i == 1) {
 				g.setColor(Color.magenta);
 			}
+			
+			if (i == 2) {
+				g.setColor(Color.yellow);
+			}
 			LinkedList<SnakePart> parts = snakes.get(i).getParts();
 			for (SnakePart part : parts) {
 
@@ -95,7 +116,7 @@ public class GameArea extends JPanel {
 	}
 
 	private void drawDialog(Graphics g, String text) {
-		Font font = new Font("Arial Black", 1, 40);
+		Font font = new Font("Arial Black", 1, 30);
 		g.setColor(Color.white);
 		int start_y = (size_y / 2) - 100;
 		g.fillRect(0, start_y, size_x, 20);
@@ -104,7 +125,7 @@ public class GameArea extends JPanel {
 		g.fillRect(0, start_y + 20, size_x, 60);
 		g.setColor(Color.gray);
 		g.setFont(font);
-		g.drawString(text, (size_x - (text.length() * 28)) / 2, start_y + 60);
+		g.drawString(text, (size_x - (text.length() * 26)) / 2, start_y + 60);
 
 	}
 }

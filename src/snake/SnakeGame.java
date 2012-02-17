@@ -24,8 +24,10 @@ public class SnakeGame extends Thread {
 	private int score;
 	private boolean paused;
 	private int players;
+	private int deadSnakes;
 	private GameLevel level;
 	private ArrayList<Snake> snakes;
+	private long GAME_DELAY;
 
 	public SnakeGame() {
 		score = 0;
@@ -33,15 +35,20 @@ public class SnakeGame extends Thread {
 		level = new LevelOne();
 		snakes = new ArrayList<Snake>();
 		apple = new Apple();
+		deadSnakes = 0;
+		GAME_DELAY = 100;
 
 	}
 
 	public void initSnakes(int amount) {
-	
-		snakes.add(new Snake(400, 400, 1));
-		
-		if (amount == 2) {
-			snakes.add(new Snake(400, 500, 2));
+
+		snakes.add(new Snake(400, 200, 1));
+
+		if (amount > 1) {
+			snakes.add(new Snake(400, 300, 2));
+		}
+		if (amount > 2) {
+			snakes.add(new Snake(400, 400, 3));
 		}
 	}
 
@@ -63,25 +70,33 @@ public class SnakeGame extends Thread {
 		Scanner scanner = new Scanner(System.in);
 		players = Integer.parseInt(scanner.nextLine());
 		this.initSnakes(players);
+		this.addDelayHandicap(players);
 		this.initApple();
-
 		MainWindow window = new MainWindow(this);
-		
 		startGame();
 		while (isRunning()) {
 			window.rePaint();
-			// logiikka
 			if (!paused && !this.ended) {
 				for (Snake snake : snakes) {
-					snake.move();
+					if (snake.alive()) {
+						snake.move();
+					}
 				}
-				if (this.checkCollision()) {
-					this.ended = true;
+				for (int i = 0; i < this.players; ++i) {
+					if (snakes.get(i).alive()) {
+						if (this.checkCollision(snakes.get(i))) {
+							snakes.get(i).die();
+							deadSnakes++;
+							if (deadSnakes == players) {
+								this.ended = true;
+							}
+						}
+					}
 				}
 				this.checkApple();
 			}
 			try {
-				SnakeGame.sleep(100);
+				SnakeGame.sleep(GAME_DELAY);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -113,15 +128,14 @@ public class SnakeGame extends Thread {
 		return paused;
 	}
 
-	public boolean checkCollision() {
-		for (Snake snake : snakes) {
-
-			for (Obstacle obs : this.getObstacles()) {
-				if (obs.overlap(snake.getPos_x(), snake.getPos_y())) {
-					return true;
-				}
+	public boolean checkCollision(Snake snake) {
+		for (Obstacle obs : this.getObstacles()) {
+			if (obs.overlap(snake.getPos_x(), snake.getPos_y())) {
+				return true;
 			}
-			if (snake.checkforCollision()) {
+		}
+		for (int i = 0; i < this.players; ++i) {
+			if (snakes.get(i).checkforCollision(snake.getPos_x(), snake.getPos_y())) {
 				return true;
 			}
 		}
@@ -145,9 +159,8 @@ public class SnakeGame extends Thread {
 		}
 		return false;
 	}
-	
-	public int getPlayers()
-	{
+
+	public int getPlayers() {
 		return players;
 	}
 
@@ -171,13 +184,16 @@ public class SnakeGame extends Thread {
 		running = true;
 	}
 
-	public String getScore() {
-		return "" + score;
-	}
-
 	private void initApple() {
 		while (!appleFits(apple.getPos_x(), apple.getPos_y())) {
-					apple.randomizePosition();
-				}
+			apple.randomizePosition();
+		}
+	}
+
+	private void addDelayHandicap(int players) {
+		if (players > 1) {
+			GAME_DELAY = GAME_DELAY + (GAME_DELAY / 4)* (players - 1);
+			System.out.println("GAME_DELAY: " + GAME_DELAY);
+		}
 	}
 }

@@ -60,7 +60,7 @@ public class Snake {
 	 * @return true if snake collides
 	 */
 	
-	public boolean checkforCollision()
+	public boolean checkforCollision(int x, int y)
 	{
 		boolean first = true;
 		for(SnakePart part : parts)
@@ -71,9 +71,8 @@ public class Snake {
 			}
 			else
 			{
-				if(part.overlap(pos_x, pos_y))
+				if(part.overlap(x, y))
 				{
-					System.out.println("törmäs");
 					return true;
 				}
 			}
@@ -162,6 +161,11 @@ public class Snake {
 	 */
 	public int getLength() {
 		return this.length;
+	}
+	
+	public int getScore()
+	{
+		return this.score;
 	}
 
 	/**
