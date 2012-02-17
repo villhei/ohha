@@ -22,7 +22,7 @@ public class Apple {
 	public Apple() {
 		
 		this.visible = false;
-		this.randomizePosition();
+		randomizePosition();
 	}
 
 	public void randomizePosition() {

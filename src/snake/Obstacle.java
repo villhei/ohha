@@ -38,7 +38,12 @@ public class Obstacle {
 		size_x = sizex;
 		size_y = sizey;
 	}
-
+	/**
+	 * Katsoo törmääkö
+	 * @param head_x X koordinaatti
+	 * @param head_y Y koordinaatti
+	 * @return Palauttaa true jos törmää, muuten false
+	 */
 	public boolean overlap(int head_x, int head_y) {
 		if ((head_x >= start_x && head_x < start_x + size_x)
 				&& (head_y >= start_y && head_y < size_y + start_y)) {

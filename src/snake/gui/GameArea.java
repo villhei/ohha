@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JPanel;
 import snake.*;
@@ -69,11 +70,20 @@ public class GameArea extends JPanel {
 	}
 
 	private void drawSnake(Graphics g) {
+		ArrayList<Snake> snakes = game.getSnake();
 
-		LinkedList<SnakePart> parts = game.getSnake().getParts();
-		for (SnakePart part : parts) {
-			g.setColor(Color.blue);
-			g.fillRect(part.getHead_x(), part.getHead_y(), part.getWidth(), part.getHeight());
+		for (int i = 0; i < game.getPlayers(); ++i) {
+			if (i == 0) {
+				g.setColor(Color.blue);
+			}
+			if (i == 1) {
+				g.setColor(Color.magenta);
+			}
+			LinkedList<SnakePart> parts = snakes.get(i).getParts();
+			for (SnakePart part : parts) {
+
+				g.fillRect(part.getHead_x(), part.getHead_y(), part.getWidth(), part.getHeight());
+			}
 		}
 	}
 
@@ -94,7 +104,7 @@ public class GameArea extends JPanel {
 		g.fillRect(0, start_y + 20, size_x, 60);
 		g.setColor(Color.gray);
 		g.setFont(font);
-		g.drawString(text, ( size_x - (text.length() * 28) )/ 2, start_y + 60);
+		g.drawString(text, (size_x - (text.length() * 28)) / 2, start_y + 60);
 
 	}
 }

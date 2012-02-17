@@ -6,6 +6,7 @@ package snake;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snake.gui.MainWindow;
@@ -16,58 +17,64 @@ import snake.gui.MainWindow;
  */
 public class SnakeGame extends Thread {
 
-	private ArrayList<Obstacle> obstacles;
-	//private ArrayList<Game> snake;
 	boolean running = false;
-	private Snake snake;
+//	private Snake snake;
 	boolean ended = false;
 	private Apple apple;
 	private int score;
 	private boolean paused;
+	private int players;
+	private GameLevel level;
+	private ArrayList<Snake> snakes;
 
 	public SnakeGame() {
-		obstacles = new ArrayList<Obstacle>();
-		Obstacle ylareuna = new Obstacle(0, 0, 800, 20);
-		Obstacle alareuna = new Obstacle(0, 580, 800, 20);
-		Obstacle keski = new Obstacle(300, 300, 100, 100);
-		Obstacle vasreuna = new Obstacle(0, 20, 20, 560);
-		Obstacle oikreuna = new Obstacle(780, 20, 20, 560);
-
-		snake = new Snake(200, 200);
-		apple = new Apple(400, 400);
 		score = 0;
 		paused = false;
-
-		obstacles.add(oikreuna);
-		obstacles.add(ylareuna);
-		obstacles.add(alareuna);
-		obstacles.add(vasreuna);
-		obstacles.add(keski);
+		level = new LevelOne();
+		snakes = new ArrayList<Snake>();
+		apple = new Apple();
 
 	}
 
+	public void initSnakes(int amount) {
+	
+		snakes.add(new Snake(400, 400, 1));
+		
+		if (amount == 2) {
+			snakes.add(new Snake(400, 500, 2));
+		}
+	}
+
 	public ArrayList<Obstacle> getObstacles() {
-		return obstacles;
+		return level.getObstacles();
 	}
 
 	public Apple getApple() {
 		return apple;
 	}
 
-	public Snake getSnake() {
-		return snake;
+	public ArrayList<Snake> getSnake() {
+		return snakes;
 	}
 
 	@Override
 	public void run() {
+		System.out.println("How many players? ");
+		Scanner scanner = new Scanner(System.in);
+		players = Integer.parseInt(scanner.nextLine());
+		this.initSnakes(players);
+		this.initApple();
+
 		MainWindow window = new MainWindow(this);
-		System.out.println("Testi");
+		
 		startGame();
 		while (isRunning()) {
 			window.rePaint();
 			// logiikka
 			if (!paused && !this.ended) {
-				this.snake.move();
+				for (Snake snake : snakes) {
+					snake.move();
+				}
 				if (this.checkCollision()) {
 					this.ended = true;
 				}
@@ -82,14 +89,15 @@ public class SnakeGame extends Thread {
 	}
 
 	public void checkApple() {
-		if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
-			score += 100;
-			apple.randomizePosition();
-			while(!appleFits(apple.getPos_x(), apple.getPos_y()))
-			{
+		for (Snake snake : snakes) {
+			if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
+				snake.score += 100;
 				apple.randomizePosition();
+				while (!appleFits(apple.getPos_x(), apple.getPos_y())) {
+					apple.randomizePosition();
+				}
+				snake.growSnake();
 			}
-			snake.growSnake();
 		}
 	}
 
@@ -106,30 +114,41 @@ public class SnakeGame extends Thread {
 	}
 
 	public boolean checkCollision() {
-		for (Obstacle obs : obstacles) {
-			if (obs.overlap(snake.getPos_x(), snake.getPos_y())) {
+		for (Snake snake : snakes) {
+
+			for (Obstacle obs : this.getObstacles()) {
+				if (obs.overlap(snake.getPos_x(), snake.getPos_y())) {
+					return true;
+				}
+			}
+			if (snake.checkforCollision()) {
 				return true;
 			}
-		}
-		if (snake.checkforCollision()) {
-			return true;
 		}
 		return false;
 	}
 
 	public boolean appleFits(int x, int y) {
-		for (Obstacle obs : obstacles) {
+		for (Obstacle obs : this.getObstacles()) {
 			if (obs.overlap(x, y)) {
 				return false;
 			}
 		}
-		LinkedList<SnakePart> parts = snake.getParts();
-		for (SnakePart part : parts) {
-			if (part.overlap(x, y)) {
-				return false;
+		for (Snake snake : snakes) {
+			LinkedList<SnakePart> parts = snake.getParts();
+			for (SnakePart part : parts) {
+				if (part.overlap(x, y)) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
+		return false;
+	}
+	
+	public int getPlayers()
+	{
+		return players;
 	}
 
 	public boolean isRunning() {
@@ -154,5 +173,11 @@ public class SnakeGame extends Thread {
 
 	public String getScore() {
 		return "" + score;
+	}
+
+	private void initApple() {
+		while (!appleFits(apple.getPos_x(), apple.getPos_y())) {
+					apple.randomizePosition();
+				}
 	}
 }

@@ -18,7 +18,10 @@ public class Snake {
 	private int direction;
 	private int width;
 	private int height;
+	private int id;
+	public int score;
 	final int movestep = 20;
+	private int moves_since_last_turn;
 	private boolean alive;
 	private LinkedList<SnakePart> parts;
 
@@ -29,13 +32,16 @@ public class Snake {
 	/**
 	 * @param input snake start point
 	 */
-	public Snake(int x, int y) {
+	public Snake(int x, int y, int id) {
 		width = 20;
 		height = 20;
 		length = 4;
 		pos_x = x;
 		pos_y = y;
 		direction = 1;
+		this.id = id;
+		score = 0;
+		moves_since_last_turn = 0;
 		alive = true;
 		parts = new LinkedList<SnakePart>();
 
@@ -49,6 +55,10 @@ public class Snake {
 		
 
 	}
+	/** Method for checking Snake's collision with
+	 *  other snakeparts than head
+	 * @return true if snake collides
+	 */
 	
 	public boolean checkforCollision()
 	{
@@ -169,7 +179,11 @@ public class Snake {
 	 * @param set snake direction int
 	 */
 	public void setDirection(int newDirection) {
-		direction = newDirection;
+		if(moves_since_last_turn > 0)
+		{
+			direction = newDirection;
+			moves_since_last_turn = 0;
+		}
 	}
 
 	/**
@@ -251,6 +265,7 @@ public class Snake {
 	 * @param move snake body to set direction
 	 */
 	public void move() {
+		++moves_since_last_turn;
 		if (direction == 0) {
 			moveUp();
 		}
