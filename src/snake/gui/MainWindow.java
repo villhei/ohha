@@ -4,8 +4,7 @@
  */
 package snake.gui;
 
-import java.awt.Color;
-import java.awt.Insets;
+import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import snake.SnakeGame;
@@ -15,19 +14,21 @@ import snake.SnakeGame;
  *
  * @author Ville Heikkinen
  */
-public class MainWindow {
+public class MainWindow{
 
 	JFrame frame;
-	private JPanel gameArea;
+	private MenuScreen menu;
 	private GameArea ga;
 	final int size_x = 800;
 	final int size_y = 600;
+	private JPanel cards;
 	private SnakeGame game;
+	private KeyboardFocusManager keymanager;
 
 	/** Constructor for Snake main window.
 	 *  calls createGameArea() quite quickly
 	 * 
-	 * @param sgame Game state as a paremeter
+	 * @param sgame Game state as param
 	 */
 	public MainWindow(SnakeGame sgame) {
 		game = sgame;
@@ -40,31 +41,53 @@ public class MainWindow {
 		frame.setSize(
 				size_x + (insets.left + insets.right),
 				size_y + (insets.top + insets.bottom));
-
-		System.out.println(insets.toString());
-		createGameArea();
 	}
 
 	/** Creates game area, gets ready for the game
 	*
 	*/
-	private void createGameArea() {
+	
+	public void createMenuScreen() {
 
+		menu = new MenuScreen(size_x, size_y, game);
+		menu.setBackground(new Color(0, 0, 0));
+		menu.setVisible(true);
+		menu.setFocusable(true);
+		menu.requestFocus();
+		menu.addKeyListener(new MenuScreenKeyListener(menu));
+		frame.getContentPane().add(menu);
+	}
+	
+	public void closeMenu()
+	{
+		menu.setFocusable(false);
+		menu.setVisible(false);
+		Container contentPane = frame.getContentPane();
+		contentPane.removeAll();
+
+	}
+		
+	public void createGameArea() {
+
+		keymanager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		keymanager.addKeyEventDispatcher(new SnakeKeyDispatcher(game));
+		Container contentPane = frame.getContentPane();
 		ga = new GameArea(size_x, size_y, game);
 		ga.setBackground(new Color(0, 0, 0));
 		ga.setVisible(true);
 		ga.setFocusable(true);
 		ga.requestFocus();
-		ga.addKeyListener(new SnakeListener(game));
-		frame.add(ga);
+		contentPane.add(ga);
+		contentPane.invalidate();
+		contentPane.repaint();
+		contentPane.setVisible(true);
+		frame.setVisible(true);
 	}
 	/**
 	 *  Method for repainting the game area
 	 */
-	
 	public void rePaint()
 	{
-		ga.repaint();
+		frame.repaint();
 	}
-
 }

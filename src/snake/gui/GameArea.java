@@ -41,6 +41,7 @@ public class GameArea extends JPanel {
 	 *  Used for repainting the game state
 	 * @param Graphics as a parameter
 	 */
+	
 	@Override
 	public void paint(Graphics gfx) {
 		super.paint(gfx);
