@@ -4,7 +4,10 @@
  */
 package snake.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import snake.SnakeGame;
@@ -56,14 +59,19 @@ public class MainWindow{
 		menu.requestFocus();
 		menu.addKeyListener(new MenuScreenKeyListener(menu));
 		frame.getContentPane().add(menu);
+		frame.validate();
 	}
 	
 	public void closeMenu()
 	{
+		System.out.println("suljin ja silleen");
+		frame.setVisible(false);
 		menu.setFocusable(false);
 		menu.setVisible(false);
-		Container contentPane = frame.getContentPane();
-		contentPane.removeAll();
+		menu = null;
+		frame.getContentPane().removeAll();
+
+		frame.repaint();
 
 	}
 		
@@ -71,16 +79,15 @@ public class MainWindow{
 
 		keymanager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		keymanager.addKeyEventDispatcher(new SnakeKeyDispatcher(game));
-		Container contentPane = frame.getContentPane();
+		
+		frame.setBackground(Color.white);
 		ga = new GameArea(size_x, size_y, game);
 		ga.setBackground(new Color(0, 0, 0));
 		ga.setVisible(true);
 		ga.setFocusable(true);
 		ga.requestFocus();
-		contentPane.add(ga);
-		contentPane.invalidate();
-		contentPane.repaint();
-		contentPane.setVisible(true);
+		frame.add(ga);
+		frame.validate();
 		frame.setVisible(true);
 	}
 	/**

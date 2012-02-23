@@ -73,7 +73,6 @@ public class SnakeGame extends Thread {
 
 	public void runGame() {
 
-		window.rePaint();
 		while (isRunning()) {
 			window.rePaint();
 			moveSnakes();
