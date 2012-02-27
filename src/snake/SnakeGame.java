@@ -4,15 +4,12 @@
  */
 package snake;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 import snake.gui.MainWindow;
 
-/**
+/** SnakeGame main game class, extends Thread
  *
- * @author villheik
+ * 
  */
 public class SnakeGame extends Thread {
 
@@ -20,50 +17,69 @@ public class SnakeGame extends Thread {
 //	private Snake snake;
 	boolean ended = false;
 	private Apple apple;
-	private int score;
 	private boolean paused;
 	private int players;
 	private int deadSnakes;
 	private GameLevel level;
-	private ArrayList<Snake> snakes;
 	protected int MAX_PLAYERS = 3;
+	private long INITIAL_DELAY = 100;
 	private long GAME_DELAY;
 	private MainWindow window;
+	private Timer timer;
+	private int activemap;
+	private ArrayList<GameLevel> levels;
 
+	/**
+	 * Parameterless constructor, sets game's intial state
+	 * and variables to default values
+	 */
 	public SnakeGame() {
-		score = 0;
+
 		paused = false;
-		level = new LevelOne();
-		snakes = new ArrayList<Snake>();
-		apple = new Apple();
+		levels = new ArrayList<GameLevel>();
+		levels.add(new LevelOne());
+		levels.add(new LevelTwo());
 		players = 1;
 		deadSnakes = 0;
-		GAME_DELAY = 100;
+		GAME_DELAY = INITIAL_DELAY;
 
 	}
+	/**
+	 *  Initialize snakes for the level
+	 *  amount should be the amount of players in game
+	 * @param amount amount of players
+	 */
 
 	public void initSnakes(int amount) {
-		snakes.add(new Snake(400, 200, 1));
-
-		if (amount > 1) {
-			snakes.add(new Snake(400, 300, 2));
-		}
-		if (amount > 2) {
-			snakes.add(new Snake(400, 400, 3));
-		}
+		level.initSnakes(amount);
 	}
 
+	/** Request the list of obstacles in the active level
+	 * 
+	 * @return ArrayList of obstacles
+	 */
 	public ArrayList<Obstacle> getObstacles() {
 		return level.getObstacles();
 	}
-
+	/** Return the current apple for drawing, etc
+	 * 
+	 * @return active apple
+	 */
 	public Apple getApple() {
 		return apple;
 	}
+	/**
+	 *  Requests a list of snakes from the gamelevel
+	 * @return ArrayList of snakes 
+	 */
 
 	public ArrayList<Snake> getSnake() {
-		return snakes;
+		return level.getSnakes();
 	}
+	/** 
+	 *  Run method for the game, creates main window
+	 *  and creates menuscreen
+	 */
 
 	@Override
 	public void run() {
@@ -71,54 +87,72 @@ public class SnakeGame extends Thread {
 		window.createMenuScreen();
 	}
 
-	public void runGame() {
-
-		while (isRunning()) {
-			window.rePaint();
+	private void runGameCycle() {
+		if (running && !paused) {
 			moveSnakes();
 			checkSnakeCollisions();
 			this.checkApple();
-			try {
-				SnakeGame.sleep(GAME_DELAY);
-			} catch (InterruptedException ex) {
-				Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
-			}
 		}
+		window.rePaint();
+
 	}
 
-	/** After menu has set the settings for the game
-	 *  use this to fire up the game along with
-	 *  appropriate game area
-	 * 
-	 *  Handles closing menu, too.
+	/**
+	 * After menu has set the settings for the game use this to fire up the game
+	 * along with appropriate game area
+	 *
+	 * Handles closing menu, too.
 	 */
-	public void startGame() {
-
+	public void startGame(int level) {
+		activemap = level;
+		deadSnakes = 0;
+		this.level = levels.get(level);
 		this.running = true;
 		this.initSnakes(players);
-		this.addDelayHandicap(players);
+		this.setDelayHandicap(players);
 		this.initApple();
 		window.closeMenu();
 		window.createGameArea();
-		runGame();
+		TimerTask gameCycle = new TimerTask() {
+
+			@Override
+			public void run() {
+				runGameCycle();
+			}
+		};
+
+		timer = new Timer();
+		timer.schedule(gameCycle, new Date(), GAME_DELAY);
+	}
+	/**
+	 *  Call for game restart, resets the current level to
+	 *  original state
+	 */
+
+	public void restartGame() {
+		timer.cancel();
+		timer.purge();
+		ended = false;
+		paused = false;
+		startGame(activemap);
 	}
 
 	private void initApple() {
+		apple = new Apple();
 		while (!appleFits(apple.getPos_x(), apple.getPos_y())) {
 			apple.randomizePosition();
 		}
 	}
 
-	private void addDelayHandicap(int players) {
+	private void setDelayHandicap(int players) {
 		if (players > 1) {
-			GAME_DELAY = GAME_DELAY + (GAME_DELAY / 4) * (players - 1);
-			System.out.println("GAME_DELAY: " + GAME_DELAY);
+			GAME_DELAY = INITIAL_DELAY + (INITIAL_DELAY / 4) * (players - 1);
 		}
 	}
 
 	private void moveSnakes() {
 		if (!paused && !this.ended) {
-			for (Snake snake : snakes) {
+			for (Snake snake : level.getSnakes()) {
 				if (snake.alive()) {
 					snake.move();
 				}
@@ -127,7 +161,7 @@ public class SnakeGame extends Thread {
 	}
 
 	private void checkApple() {
-		for (Snake snake : snakes) {
+		for (Snake snake : level.getSnakes()) {
 			if (apple.eatingme(snake.getPos_x(), snake.getPos_y())) {
 				snake.score += 100;
 				apple.randomizePosition();
@@ -138,17 +172,21 @@ public class SnakeGame extends Thread {
 			}
 		}
 	}
+	/** Toggle games paused state, stops movement in main loop
+	 * 
+	 */
 
 	public void togglePause() {
-		System.out.println("toggle");
 		if (paused) {
-			System.out.println("false");
 			paused = false;
 		} else {
-			System.out.println("true");
 			paused = true;
 		}
 	}
+	/**
+	 *  Is the game paused
+	 * @return true if paused, otherwise false
+	 */
 
 	public boolean isPaused() {
 		return paused;
@@ -156,12 +194,12 @@ public class SnakeGame extends Thread {
 
 	private void checkSnakeCollisions() {
 		for (int i = 0; i < this.players; ++i) {
-			if (snakes.get(i).alive()) {
-				if (this.checkForSnakeCollision(snakes.get(i))) {
-					snakes.get(i).die();
+			if (level.getSnakes().get(i).alive()) {
+				if (this.checkForSnakeCollision(level.getSnakes().get(i))) {
+					level.getSnakes().get(i).die();
 					deadSnakes++;
 					if (deadSnakes == players) {
-						this.ended = true;
+						endGame();
 					}
 				}
 			}
@@ -176,7 +214,7 @@ public class SnakeGame extends Thread {
 			}
 		}
 		for (int i = 0; i < this.players; ++i) {
-			if (snakes.get(i).checkforCollision(snake.getPos_x(), snake.getPos_y())) {
+			if (level.getSnakes().get(i).checkforCollision(snake.getPos_x(), snake.getPos_y())) {
 				return true;
 			}
 		}
@@ -189,7 +227,7 @@ public class SnakeGame extends Thread {
 				return false;
 			}
 		}
-		for (Snake snake : snakes) {
+		for (Snake snake : level.getSnakes()) {
 			LinkedList<SnakePart> parts = snake.getParts();
 			for (SnakePart part : parts) {
 				if (part.overlap(x, y)) {
@@ -204,12 +242,19 @@ public class SnakeGame extends Thread {
 	public int getPlayers() {
 		return players;
 	}
+	
+	/**
+	 *  Add a player to the game, not added if exceeds maximum value
+	 */
 
 	public void addPlayer() {
 		if (players + 1 <= MAX_PLAYERS) {
 			players++;
 		}
 	}
+	/**
+	 *  Remove player from the game, not removed if less than 1
+	 */
 
 	public void removePlayer() {
 		if (players - 1 > 0) {
@@ -230,6 +275,10 @@ public class SnakeGame extends Thread {
 	}
 
 	public void pauseGame() {
-		running = false;
+		paused = true;
+	}
+
+	public int getLevelAmount() {
+		return levels.size();
 	}
 }

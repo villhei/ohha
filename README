@@ -6,21 +6,23 @@ Tekijä:
 
 Aihe: Matopeli
 
-  	Yksinkertainen matopeli. Matopelissä on ainakin yksi pelaaja,
-	mahdollisesti ajan salliessa toteutetaan moninpeli. Matopelissä
-	on vaihtuvia kenttiä, joissa mato seikkailee syöden omenoita,
-	tai muita vastaavia objekteja, ja kasvaa pituutta. 
+  	Yksinkertainen matopeli. Matopelissä on ainakin yksi pelaaja ja
+	enintään kolme pelaajaa kerrallaan. 
+
+	Pelaajamäärävalinta suoritetaan pelin alkuvalikosta, jossa valintaa
+	muutetaan näppäimistön nuolinäppäimillä, ja säädettäviä määriä, kuten
+	pelaajamäärää ja pelikenttää, vaihdetaan vasemmalla ja oikealla nuolella. 
 
 	Madon on vältettävä törmäämästä pelialueen seiniin, tai omaan
 	vartaloonsa. 
 
 Käyttäjät:
 
-	Peli-intoinen pelaaja
+	Maksimissaan kolme peli-intoista pelaaja
 
 Toiminnot:
 
+	Pelaajamäärän valinta
 	Pelikentän valinta
-	Highscore-lista
-	Mahdollinen verkkopeli
+	Pelin uudelleenaloitus
 

@@ -1,28 +1,46 @@
 package snake.gui;
 
-
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import snake.Snake;
 import snake.SnakeGame;
 
+/**
+ *  Class handling all the snake games key input related to gameplay
+ * 
+ * @author villheik
+ */
+
 public class SnakeKeyDispatcher implements KeyEventDispatcher {
 
 	private SnakeGame game;
 
+	/**
+	 *  Constructor for the games keydispatcher
+	 * @param SnakeGame game 
+	 */
 	public SnakeKeyDispatcher(SnakeGame game) {
 		this.game = game;
 	}
 
+	/**
+	 * Send keyEvent to the game, statically filtered
+	 * values for actions
+	 * @param KeyEvent event
+	 * @return true in any case
+	 */
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			ArrayList<Snake> snakes = game.getSnake();
 
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				System.out.println("sent 1");
 				game.togglePause();
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				game.restartGame();
 			}
 
 			keyPressesForPlayer1(e, snakes.get(0));
@@ -32,14 +50,13 @@ public class SnakeKeyDispatcher implements KeyEventDispatcher {
 			}
 			if (game.getPlayers() > 2) {
 				keyPressesForPlayer3(e, snakes.get(2));
-			}		
+			}
 		}
 		return true;
 	}
 
 	private void keyPressesForPlayer1(KeyEvent ke, Snake snake) {
 		if (ke.getKeyCode() == KeyEvent.VK_UP) {
-			System.out.println("ylös");
 			if (snake.getDirection() != 2) {
 				snake.setDirection(0);
 			}
@@ -115,5 +132,4 @@ public class SnakeKeyDispatcher implements KeyEventDispatcher {
 			}
 		}
 	}
-
 }

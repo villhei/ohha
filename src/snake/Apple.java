@@ -7,8 +7,8 @@ package snake;
 import java.util.Random;
 
 /**
- *
- * @author villheik
+ * Class for all the relevant stuff about Apples
+ * 
  */
 public class Apple {
 
@@ -18,12 +18,19 @@ public class Apple {
 	private int pos_y;
 	private Random random;
 	private boolean visible;
-
+	
+	/** Constructor for creating an apple,
+	 *  constructor also randomizes apple position.
+	 */
 	public Apple() {
 		
 		this.visible = false;
 		randomizePosition();
 	}
+	
+	/**
+	 *  Randomize apple position
+	 */
 
 	public void randomizePosition() {
 		random = new Random();
@@ -31,6 +38,12 @@ public class Apple {
 		pos_y = random.nextInt(28)*20+20;
 	}
 
+	/** Is snake eating the apple?
+	 * 
+	 * @param head_x Snake's head location (x)
+	 * @param head_y Snake's head location (y)
+	 * @return true if snake eats, false if not
+	 */
 	public boolean eatingme(int head_x, int head_y) {
 		if ((head_x >= pos_x && head_x < pos_x + size_x)
 				&& (head_y >= pos_y && head_y < pos_y + size_y)) {
@@ -39,6 +52,11 @@ public class Apple {
 		}
 		return false;
 	}
+	/** Constructor for apple
+	 * 
+	 * @param x creation position
+	 * @param y creation position
+	 */
 
 	public Apple(int x, int y) {
 		pos_x = x;
@@ -46,6 +64,10 @@ public class Apple {
 		visible = true;
 	}
 
+	/** is apple visible?
+	 * 
+	 * @return visibility
+	 */
 	public boolean isVisible() {
 		return visible;
 	}

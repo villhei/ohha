@@ -8,20 +8,27 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JPanel;
 import snake.*;
+/**
+ *  Game area, acts as a container for game events
+ * @author villheik
+ */
 
 public class GameArea extends JPanel {
 
 	private int size_x;
 	private int size_y;
 	private SnakeGame game;
+	
+	/**
+	 *  Constructor for game area
+	 * @param x horizontal size (default 800)
+	 * @param y vertical size (default 600)
+	 * @param sgame current game
+	 */
 
 	public GameArea(int x, int y, SnakeGame sgame) {
 		this.size_x = x;
@@ -30,6 +37,11 @@ public class GameArea extends JPanel {
 		this.setSize(size_x, size_y);
 
 	}
+	
+	/** toString method to request for debug info
+	 *  from the game area
+	 * @return String representation of game areas size 
+	 */
 
 	@Override
 	public String toString() {
@@ -37,7 +49,7 @@ public class GameArea extends JPanel {
 		return "Gamearea x: " + blaa.width + ", y: " + blaa.height;
 	}
 
-	/** Method to paint the window
+	/** Method to paint the panel
 	 *  Used for repainting the game state
 	 * @param Graphics as a parameter
 	 */

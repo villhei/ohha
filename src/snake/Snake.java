@@ -7,8 +7,9 @@ package snake;
 import java.util.LinkedList;
 
 /**
- *
- * @author villheik
+ * Class for modifying the snake directions,
+ * contains also the SnakeParts, and acts as a
+ * container for them
  */
 public class Snake {
 
@@ -29,8 +30,12 @@ public class Snake {
 	//    0 
 	//  3 * 1
 	//    2
+
 	/**
-	 * @param input snake start point
+	 *  Snakes's constructor
+	 * @param x x coordinate to start from
+	 * @param y y coordinate to start from
+	 * @param id snake's unique id 
 	 */
 	public Snake(int x, int y, int id) {
 		width = 20;
@@ -38,7 +43,7 @@ public class Snake {
 		length = 4;
 		pos_x = x;
 		pos_y = y;
-		direction = 1;
+		this.direction = 1;
 		this.id = id;
 		score = 0;
 		moves_since_last_turn = 0;
@@ -47,17 +52,11 @@ public class Snake {
 
 		for (int i = 0; i < length; ++i) {
 			parts.addLast(new SnakePart(x - (width * i), y, width, height));
-			System.out.println("added!");
-			System.out.println("" + parts.getFirst());
 		}
-		System.out.println("parts.size: " + parts.size());
-		System.out.println("snake.legnth: " + length);
-		
-
 	}
 	/** Method for checking Snake's collision with
 	 *  other snakeparts than head
-	 * @return true if snake collides
+	 * @return true if snake collides, else false
 	 */
 	
 	public boolean checkforCollision(int x, int y)
@@ -98,12 +97,18 @@ public class Snake {
 	public String toString() {
 		return "Direction: " + direction + "\npos_x: " + pos_x + "\npos_y: " + pos_y;
 	}
+	/**
+	 *  Check if snake is alive
+	 * @return snake living state
+	 */
 	
 	public boolean alive()
 	{
 		return alive;
 	}
-	
+	/**
+	 *  Kill snake
+	 */
 	public void die()
 	{
 		alive = false;

@@ -5,8 +5,8 @@
 package snake;
 
 /**
- *
- * @author villheik
+ * Class of obstacles for the game, these are the walls, etc
+ * setters and getters for their dimensions
  */
 public class Obstacle {
 
@@ -15,7 +15,7 @@ public class Obstacle {
 	private int size_x;
 	private int size_y;
 
-	/**
+	/** Constuctor for the obstacle
 	 * @param create new obstacle, start x, start y, size x, size y
 	 */
 	public Obstacle(int startx, int starty, int sizex, int sizey) {
@@ -39,10 +39,10 @@ public class Obstacle {
 		size_y = sizey;
 	}
 	/**
-	 * Katsoo törmääkö
-	 * @param head_x X koordinaatti
-	 * @param head_y Y koordinaatti
-	 * @return Palauttaa true jos törmää, muuten false
+	 * Check if snake collides
+	 * @param head_x x coordinate
+	 * @param head_y Y coordinate
+	 * @return true if snake collides with obstacle, otherwise false
 	 */
 	public boolean overlap(int head_x, int head_y) {
 		if ((head_x >= start_x && head_x < start_x + size_x)
@@ -51,6 +51,10 @@ public class Obstacle {
 		}
 		return false;
 	}
+	/**
+	 *  ToString fro the obstacle, useful for debugging
+	 * @return string representation
+	 */
 
 	@Override
 	public String toString() {

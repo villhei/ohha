@@ -4,12 +4,8 @@
  */
 package snake.gui;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Insets;
-import java.awt.KeyboardFocusManager;
+import java.awt.*;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import snake.SnakeGame;
 
 /** SnakeGame main Window class. Handles all the window related
@@ -24,7 +20,6 @@ public class MainWindow{
 	private GameArea ga;
 	final int size_x = 800;
 	final int size_y = 600;
-	private JPanel cards;
 	private SnakeGame game;
 	private KeyboardFocusManager keymanager;
 
@@ -36,18 +31,21 @@ public class MainWindow{
 	public MainWindow(SnakeGame sgame) {
 		game = sgame;
 		frame = new JFrame("Mighty Snake");
+		ga = new GameArea(size_x, size_y, game);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setBackground(Color.white);
+		frame.setBackground(Color.black);
+		frame.setLayout(new BorderLayout());
 		frame.setVisible(true);
 		Insets insets = frame.getInsets();
 		frame.setSize(
 				size_x + (insets.left + insets.right),
 				size_y + (insets.top + insets.bottom));
+		frame.setLayout(new CardLayout());
 	}
 
-	/** Creates game area, gets ready for the game
-	*
+	/** Creates menu screen, used to setup game
+	*   creates a KeyListener
 	*/
 	
 	public void createMenuScreen() {
@@ -57,44 +55,62 @@ public class MainWindow{
 		menu.setVisible(true);
 		menu.setFocusable(true);
 		menu.requestFocus();
+		menu.setBounds(0, 0, size_x, size_y);
+		menu.setMinimumSize(new Dimension(800,600));
 		menu.addKeyListener(new MenuScreenKeyListener(menu));
-		frame.getContentPane().add(menu);
+		frame.add(menu, BorderLayout.CENTER);
 		frame.validate();
 	}
+	/**
+	 *  Just show the menu instead of creating it
+	 */
+	
+	public void showMenu()
+	{
+		game.pauseGame();
+		frame.remove(ga);
+		ga.setFocusable(false);
+		ga.setVisible(false);
+		menu.setFocusable(true);
+		menu.requestFocus();
+		frame.add(menu);
+		frame.validate();
+		frame.repaint();
+	}
+	/**
+	 *  Method for closing down the menu
+	 */
 	
 	public void closeMenu()
 	{
-		System.out.println("suljin ja silleen");
-		frame.setVisible(false);
 		menu.setFocusable(false);
-		menu.setVisible(false);
-		menu = null;
-		frame.getContentPane().removeAll();
-
+		frame.remove(menu);
+		frame.validate();
 		frame.repaint();
 
 	}
+	/**
+	 *  Create game area, associate KeyDispatcher with it
+	 */
 		
 	public void createGameArea() {
 
 		keymanager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		keymanager.addKeyEventDispatcher(new SnakeKeyDispatcher(game));
-		
-		frame.setBackground(Color.white);
-		ga = new GameArea(size_x, size_y, game);
 		ga.setBackground(new Color(0, 0, 0));
-		ga.setVisible(true);
 		ga.setFocusable(true);
 		ga.requestFocus();
-		frame.add(ga);
-		frame.validate();
+		ga.setBounds(0, 0, size_x, size_y);
+		frame.add(ga, BorderLayout.CENTER);
 		frame.setVisible(true);
+		ga.setVisible(true);
 	}
 	/**
-	 *  Method for repainting the game area
+	 *  Method for repainting the game area, the game should call this
+	 *  method
 	 */
 	public void rePaint()
 	{
-		frame.repaint();
+		ga.repaint();
 	}
 }

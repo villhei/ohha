@@ -1,5 +1,10 @@
 package snake;
 
+/**
+ *  Class for snake bodypart nodes
+ * @author villheik
+ */
+
 public class SnakePart {
 
 	private int head_x;
@@ -42,6 +47,10 @@ public class SnakePart {
 		return "head_x: " + head_x + " head_y: " + head_y +
 				" width: " + width + " height: " + height;
 	}
+	/**
+	 *  get snake direction
+	 * @return integer, direction, 0-3
+	 */
 
 	public int getDirection() {
 		return direction;
